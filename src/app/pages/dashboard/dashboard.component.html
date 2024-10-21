@@ -1,0 +1,304 @@
+<p-table #dt [value]="postulantes" [(selection)]="selectedPostulantes" dataKey="id_postulante" [rowHover]="true"
+    [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading"
+    [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+    [filterDelay]="0" [globalFilterFields]="['nombres']">
+    <ng-template pTemplate="caption">
+        <div class="flex justify-content-between">
+            <div class="d-flex justify-content-start">
+                <p-button class="p-button-outlined" icon="pi pi-filter-slash" label="+ NUEVO" (onClick)="evaluar(0)"></p-button>
+            </div>
+            <br>
+            <br>
+            <p-button class="p-button-outlined" icon="pi pi-filter-slash" label="Limpiar" (onClick)="clear(dt)"></p-button>
+            <!-- Ajuste del input con icono de búsqueda a la izquierda -->
+            <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                    placeholder="Buscar" />
+
+            </span>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="id_postulante" style="min-width: 1rem">N° Arch<p-sortIcon field="id_postulante"></p-sortIcon></th>
+            <th pSortableColumn="ci" style="min-width: 1rem">CI <p-sortIcon field="ci"></p-sortIcon></th>
+            <th pSortableColumn="nombres" style="min-width: 1rem">Nombre <p-sortIcon field="nombres"></p-sortIcon></th>
+            <th pSortableColumn="ap_pat" style="min-width: 1rem">Apellido Paterno <p-sortIcon field="ap_pat"></p-sortIcon></th>
+            <th pSortableColumn="ap_mat" style="min-width: 1rem">Apellido Materno <p-sortIcon field="ap_mat"></p-sortIcon></th>
+            <th pSortableColumn="celular" style="min-width: 1rem">Celular<p-sortIcon field="celular"></p-sortIcon></th>
+            <th pSortableColumn="estado" style="min-width: 1rem">Estado <p-sortIcon field="estado"></p-sortIcon></th>
+            <th>Examenes</th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-postulante>
+        <tr>
+            <td>{{ postulante.id_postulante }}</td>
+            <td>{{ postulante.ci }}</td>
+            <td>{{ postulante.nombres }}</td>
+            <td>{{ postulante.ap_pat }}</td>
+            <td>{{ postulante.ap_mat }}</td>
+            <td>{{ postulante.celular }}</td>
+            <td><p-tag [value]="postulante.estado" [severity]="getSeverity(postulante.estado) ?? 'default'"></p-tag></td>
+            <td>
+                <button class="btn btn-danger " (click)="evaluar(1)"><i class="mdi mdi-heart-pulse mdi-24px"></i>E M</button>&nbsp;
+                <button class="btn btn-danger" (click)="evaluar(2)"><i class="mdi mdi-brain mdi-24px"></i> E P</button>&nbsp;
+                <button class="btn btn-danger" (click)="evaluar(3)"><i class="mdi mdi-tooth-outline mdi-24px"></i> E O</button>
+            </td>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="5">No se encontraron postulantes.</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="vnuevo" [modal]="true" header="Formulario de Postulantes" [closable]="true"
+    [style]="{width: '1000px', height: '1000px'}" [draggable]="false">
+    <div class="p-fluid">
+        <div style="display: flex; justify-content: space-between;">
+            <div style="flex: 1; padding: 10px; ">
+                <label for="nombres">Nombres</label>
+                <input id="nombres" type="text" pInputText [(ngModel)]="postulante.nombres" placeholder="Ingresa tus nombres" />
+            </div>
+            <div style="flex: 1; padding: 10px; ">
+                <label for="apPat">Apellido Paterno</label>
+                <input id="apPat" type="text" pInputText [(ngModel)]="postulante.apPat" placeholder="Ingresa tu apellido paterno" />
+            </div>
+            <div style="flex: 1; padding: 10px; ">
+                <label for="apMat">Apellido Materno</label>
+                <input id="apMat" type="text" pInputText [(ngModel)]="postulante.apMat" placeholder="Ingresa tu apellido materno" />
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <div style="flex: 1; padding: 10px; ">
+                <label for="fecnac">Fecha de Nacimiento</label>
+                <p-calendar class="custom-calendar" [(ngModel)]="postulante.fecnac" dateFormat="dd/mm/yy" [showIcon]="true"
+                    inputId="icondisplay"></p-calendar>
+            </div>
+            <div style="flex: 1; padding: 10px; ">
+                <label for="celular">Celular</label>
+                <input id="celular" type="text" pInputText [(ngModel)]="postulante.celular" placeholder="Número de celular" />
+            </div>
+            <div style="flex: 1; padding: 10px; ">
+                <label for="correo">Correo Electronico</label>
+                <input id="correo" type="text" pInputText [(ngModel)]="postulante.apMat" placeholder="Ingresa tu correo electronico" />
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <div style="flex: 1; padding: 10px; ">
+                <label for="domicilio">Domicilio</label>
+                <input id="domicilio" type="text" pInputText [(ngModel)]="postulante.domicilio" placeholder="Domicilio" />
+            </div>
+            <div style="flex: 1; padding: 10px; ">
+                <label for="depto">Departamento</label>
+                <ng-select [items]="departamentos" bindLabel="departamento" bindValue="id_depto" [(ngModel)]="postulante.depto">
+                </ng-select>
+            </div>
+            <div style="flex: 1; padding: 10px; ">
+                <label for="escuela">Escuela</label>
+                <ng-select [items]="departamentos" bindLabel="escuela" bindValue="id_escuela" [(ngModel)]="postulante.escuela">
+                </ng-select>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <div style="flex: 1; padding: 10px; ">
+                <label for="cod_boucher">Codigo Boucher</label>
+                <input id="cod_boucher" type="text" pInputText [(ngModel)]="postulante.cod_boucher"
+                    placeholder="Codigo Boucher" />
+            </div>
+            <div style="flex: 1; padding: 10px; ">
+                <label for="fec_boucher">Fecha de Boucher</label>
+                <p-calendar class="custom-calendar" [(ngModel)]="postulante.fec_boucher" dateFormat="dd/mm/yy" [showIcon]="true"
+                    inputId="icondisplay"></p-calendar>
+            </div>
+            <div style="flex: 1; padding: 10px; ">
+                <label for="total_boucher">Monto de Boucher</label>
+                <input id="total_boucher" type="text" pInputText [(ngModel)]="postulante.total_boucher" placeholder="Monto de Boucher" />
+            </div>
+            <div style="flex: 1; padding: 10px; justify-content: flex-end;">
+                <p-button label="+" icon="pi pi-check" (onClick)="guardarPostulante()"
+                    styleClass="p-button-success"></p-button>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; padding: 10px;">
+            <p-button label="Guardar" icon="pi pi-check" (onClick)="guardarPostulante()"
+                styleClass="p-button-success"></p-button>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog [(visible)]="vmedico" [modal]="true" header="Examen Médico" [closable]="false"
+    [style]="{width: '500px'}" [draggable]="false">
+    <div class="p-fluid">
+        <!-- Nombres -->
+        <div class="p-field">
+            <label for="nombres">Nombres</label>
+            <input id="nombres" type="text" pInputText [(ngModel)]="postulante.nombres"
+                placeholder="Ingresa tus nombres" />
+        </div>
+
+        <!-- Apellido Paterno -->
+        <div class="p-field">
+            <label for="apPat">Apellido Paterno</label>
+            <input id="apPat" type="text" pInputText [(ngModel)]="postulante.apPat"
+                placeholder="Ingresa tu apellido paterno" />
+        </div>
+
+        <!-- Apellido Materno -->
+        <div class="p-field">
+            <label for="apMat">Apellido Materno</label>
+            <input id="apMat" type="text" pInputText [(ngModel)]="postulante.apMat"
+                placeholder="Ingresa tu apellido materno" />
+        </div>
+
+        <!-- Celular -->
+        <div class="p-field">
+            <label for="celular">Celular</label>
+            <input id="celular" type="text" pInputText [(ngModel)]="postulante.celular"
+                placeholder="Número de celular" />
+        </div>
+
+        <!-- Fecha de Nacimiento -->
+        <div class="p-field">
+            <label for="fecnac">Fecha de Nacimiento</label>
+            <p-calendar [(ngModel)]="postulante.fecnac" dateFormat="dd/mm/yy" [showIcon]="true"
+                inputId="icondisplay"></p-calendar>
+        </div>
+
+        <!-- Departamento -->
+        <div class="p-field">
+            <label for="depto">Departamento</label>
+            <ng-select [items]="departamentos" bindLabel="label" bindValue="label" [(ngModel)]="postulante.depto">
+            </ng-select>
+        </div>
+        <br>
+        <!-- Botones -->
+        <div class="p-field p-fluid">
+            <p-button label="Guardar" icon="pi pi-check" (onClick)="guardarPostulante()"
+                styleClass="p-button-success"></p-button>
+            <br>
+            <br>
+            <p-button label="Cancelar" icon="pi pi-times" (onClick)="cancelar(1)"
+                styleClass="p-button-secondary"></p-button>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog [(visible)]="vpsico" [modal]="true" header="Examen Psicologico" [closable]="false"
+    [style]="{width: '500px'}" [draggable]="false">
+    <div class="p-fluid">
+        <!-- Nombres -->
+        <div class="p-field">
+            <label for="nombres">Nombres</label>
+            <input id="nombres" type="text" pInputText [(ngModel)]="postulante.nombres"
+                placeholder="Ingresa tus nombres" />
+        </div>
+
+        <!-- Apellido Paterno -->
+        <div class="p-field">
+            <label for="apPat">Apellido Paterno</label>
+            <input id="apPat" type="text" pInputText [(ngModel)]="postulante.apPat"
+                placeholder="Ingresa tu apellido paterno" />
+        </div>
+
+        <!-- Apellido Materno -->
+        <div class="p-field">
+            <label for="apMat">Apellido Materno</label>
+            <input id="apMat" type="text" pInputText [(ngModel)]="postulante.apMat"
+                placeholder="Ingresa tu apellido materno" />
+        </div>
+
+        <!-- Celular -->
+        <div class="p-field">
+            <label for="celular">Celular</label>
+            <input id="celular" type="text" pInputText [(ngModel)]="postulante.celular"
+                placeholder="Número de celular" />
+        </div>
+
+        <!-- Fecha de Nacimiento -->
+        <div class="p-field">
+            <label for="fecnac">Fecha de Nacimiento</label>
+            <p-calendar [(ngModel)]="postulante.fecnac" dateFormat="dd/mm/yy" [showIcon]="true"
+                inputId="icondisplay"></p-calendar>
+        </div>
+
+        <!-- Departamento -->
+        <div class="p-field">
+            <label for="depto">Departamento</label>
+            <ng-select [items]="departamentos" bindLabel="label" bindValue="label" [(ngModel)]="postulante.depto">
+            </ng-select>
+        </div>
+        <br>
+        <!-- Botones -->
+        <div class="p-field p-fluid">
+            <p-button label="Guardar" icon="pi pi-check" (onClick)="guardarPostulante()"
+                styleClass="p-button-success"></p-button>
+            <br>
+            <br>
+            <p-button label="Cancelar" icon="pi pi-times" (onClick)="cancelar(2)"
+                styleClass="p-button-secondary"></p-button>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog [(visible)]="vodonto" [modal]="true" header="Examen Odontologico" [closable]="false"
+    [style]="{width: '500px'}" [draggable]="false">
+    <div class="p-fluid">
+        <!-- Nombres -->
+        <div class="p-field">
+            <label for="nombres">Nombres</label>
+            <input id="nombres" type="text" pInputText [(ngModel)]="postulante.nombres"
+                placeholder="Ingresa tus nombres" />
+        </div>
+
+        <!-- Apellido Paterno -->
+        <div class="p-field">
+            <label for="apPat">Apellido Paterno</label>
+            <input id="apPat" type="text" pInputText [(ngModel)]="postulante.apPat"
+                placeholder="Ingresa tu apellido paterno" />
+        </div>
+
+        <!-- Apellido Materno -->
+        <div class="p-field">
+            <label for="apMat">Apellido Materno</label>
+            <input id="apMat" type="text" pInputText [(ngModel)]="postulante.apMat"
+                placeholder="Ingresa tu apellido materno" />
+        </div>
+
+        <!-- Celular -->
+        <div class="p-field">
+            <label for="celular">Celular</label>
+            <input id="celular" type="text" pInputText [(ngModel)]="postulante.celular"
+                placeholder="Número de celular" />
+        </div>
+
+        <!-- Fecha de Nacimiento -->
+        <div class="p-field">
+            <label for="fecnac">Fecha de Nacimiento</label>
+            <p-calendar [(ngModel)]="postulante.fecnac" dateFormat="dd/mm/yy" [showIcon]="true"
+                inputId="icondisplay"></p-calendar>
+        </div>
+
+        <!-- Departamento -->
+        <div class="p-field">
+            <label for="depto">Departamento</label>
+            <ng-select [items]="departamentos" bindLabel="label" bindValue="label" [(ngModel)]="postulante.depto">
+            </ng-select>
+        </div>
+        <br>
+        <!-- Botones -->
+        <div class="p-field p-fluid">
+            <p-button label="Guardar" icon="pi pi-check" (onClick)="guardarPostulante()"
+                styleClass="p-button-success"></p-button>
+            <br>
+            <br>
+            <p-button label="Cancelar" icon="pi pi-times" (onClick)="cancelar(3)"
+                styleClass="p-button-secondary"></p-button>
+        </div>
+    </div>
+</p-dialog>

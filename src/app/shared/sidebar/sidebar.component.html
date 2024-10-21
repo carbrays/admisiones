@@ -1,0 +1,62 @@
+<!-- ========== App Menu ========== -->
+<div class="app-menu navbar-menu">
+    <!-- LOGO -->
+    <div class="navbar-brand-box">
+        <!-- Dark Logo-->
+        <a href="index.html" class="logo logo-dark">
+            <span class="logo-sm">
+                <img src="assets/images/logo-sm.png" alt="" height="32">
+            </span>
+            <span class="logo-lg">
+                <img src="assets/images/logo-dark.png" alt="" height="17">
+            </span>
+        </a>
+        <!-- Light Logo-->
+        <a href="index.html" class="logo logo-light">
+            <span class="logo-sm">
+                <img src="assets/images/logo-sm.png" alt="" height="32">
+            </span>
+            <span class="logo-lg">
+                <img src="assets/images/logo.png" alt="" height="117">
+            </span>
+        </a>
+        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover" title="Vertical Hover">
+            <i class="ri-record-circle-line"></i>
+        </button>
+    </div>
+
+    <div id="scrollbar">
+        <div class="container-fluid">
+
+            <div id="two-column-menu">
+            </div>
+            <ul class="navbar-nav" id="navbar-nav">
+                <li class="menu-title"><span data-key="t-menu"><b style="color: rgb(248, 235, 178);">Menu principal</b></span></li>
+                <li *ngFor="let menu of _sidebar.menu; let i = index" class="nav-item">
+                    <a class="nav-link menu-link " href="#sidebar{{i}}"  data-bs-toggle="collapse" role="button" aria-expanded="false" attr.aria-controls="sidebar{{i}}">
+                        <i [class]="menu.icono"></i> <span attr.data-key="t-bar{{i}}" ><b style="color: rgb(248, 235, 178);">{{menu.titulo}}</b></span> 
+                        <span class="badge badge-pill bg-danger" attr.data-key="t-hot{{i}}">{{menu.submenu?.length}}</span>
+                    </a>
+                    <div *ngIf="menu.submenu">
+                        <div class="collapse menu-dropdown" id="sidebar{{i}}">
+                            <ul class="nav nav-sm flex-column">
+                                <li *ngFor="let submenu of menu.submenu; let o = index" class="nav-item">
+                                    <a routerLinkActive="active" 
+                                    [routerLink]="submenu.url" 
+                                    class="nav-link" 
+                                    attr.data-key="t-enlace{{o}}" 
+                                    [routerLinkActiveOptions]="{exact:true}" >{{submenu.titulo}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+
+    <div class="sidebar-background"></div>
+</div>
+
+<!-- Left Sidebar End -->
