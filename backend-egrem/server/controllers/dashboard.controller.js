@@ -41,6 +41,40 @@ const listarEscuelas = async (req, res) => {
     })
 }
 
+const crearPostulante= async (req, res) => {
+    let text1 = `INSERT INTO public.postulantes(
+	id_postulante, ci, nombres, ap_pat, ap_mat, celular, correo, fecnac, domicilio, depto, id_escuela, cod_boucher, fec_boucher, total_boucher, img_boucher, id_usuario_asig, estado, usucre, feccre, usumod, fecmod)
+	VALUES (125, '${req.body.ci}',
+'${req.body.nombres}',
+'${req.body.ap_pat}',
+'${req.body.ap_mat}',
+'${req.body.celular}',
+'${req.body.correo}',
+'${req.body.fecnac}',
+'${req.body.domicilio}',
+'${req.body.depto}',
+'${req.body.id_escuela}',
+'${req.body.cod_boucher}',
+'${req.body.fec_boucher}',
+'${req.body.total_boucher}',
+'${req.body.img_boucher}',
+'${req.body.id_usuario_asig}',
+'${req.body.estado}',
+'${req.body.usucre}',
+'${req.body.feccre}',
+'${req.body.usumod}',
+'${req.body.fecmod}'
+) returning *`;
+                console.log(text1)
+                pool.query(text1, async (err, result1) => {
+                    if (err) { throw err; } else {
+                        return res.status(200).json(result1.rows);
+                    }
+                })
+            
+        }
+
+
 const datoEmpresa= async (req, res) => {
     const text = `select 
     case when id_directorio is null then id_usuario else id_directorio end as id_directorio,
@@ -179,6 +213,9 @@ const updateGastos = async (req, res) => {
 module.exports = {
     listar,
     listarDeptos,
+    listarCentros,
+    listarEscuelas,
+    crearPostulante,
     datoEmpresa,
     datoGastos,
     listaDirectorio,

@@ -3,10 +3,11 @@ import 'lodash';
 import { CodificacionService } from 'src/app/services/service.index';
 import Swal from 'sweetalert2';
 import { GastosModel } from '../../interfaces/gastos.interface';
-import { RegistroForm } from '../../interfaces/registro.interface';
+import { GuardarPostulante } from '../../interfaces/guardarpostulante.interface';
 
 import { PostulantesService } from '../../services/postulantes/postulantes.service';
 import { Table } from 'primeng/table';
+import { now } from 'moment';
 declare var _:any;
 
 @Component({
@@ -28,23 +29,32 @@ export class DashboardComponent implements OnInit {
 
   filterValue: string = '';
 
-  postulante = {
-    id: null,
-    ci: null,
+  postulante: GuardarPostulante = {
+    ci: '',
     nombres: '',
-    apPat: '',
-    apMat: '',
+    ap_pat: '',
+    ap_mat: '',
     celular: '',
-    fecnac: null,
-    depto: null,
+    correo: '',
+    fecnac: undefined,
     domicilio: '',
-    escuela: null,
-    cod_boucher: null,
-    fec_boucher: null,
-    total_boucher: null
+    depto: undefined,
+    id_escuela: undefined,
+    cod_boucher: '',
+    fec_boucher: undefined,
+    total_boucher: undefined,
+    img_boucher: '',
+    id_usuario_asig: undefined,
+    estado: '',
+    usucre: '',
+    feccre: undefined,
+    usumod: '',
+    fecmod: undefined,
   };
 
   departamentos: any;
+
+  escuelas: any;
 
   constructor(private postulantesService: PostulantesService) { }
 
@@ -54,6 +64,9 @@ export class DashboardComponent implements OnInit {
     });
     this.postulantesService.getDepartamentos().subscribe((data: any[]) => {
       this.departamentos = data;
+    });
+    this.postulantesService.getEscuelas().subscribe((data: any[]) => {
+      this.escuelas = data;
     });
     this.loading = false;
     
@@ -92,9 +105,28 @@ export class DashboardComponent implements OnInit {
   }
 
   guardarPostulante() {
-    // lógica para guardar el postulante
-    console.log('Postulante guardado:', this.postulante);
-    this.vnuevo = false;
+    this.postulante.img_boucher = 'prueba.jpg';
+    this.postulante.id_usuario_asig = Number(localStorage.getItem('id'));
+    this.postulante.estado= 'ELABORADO';
+    this.postulante.usucre= 'admin';
+    this.postulante.feccre= new Date();
+    this.postulante.usumod= '';
+    this.postulante.fecmod= new Date();
+    this.postulantesService.createPostulante(this.postulante).subscribe(
+    response => {
+      console.log('Postulante guardado:', response);
+      Swal.fire({
+              title: 'Guardado',
+              text: 'El postulante ha sido registrado con exito',
+              icon: 'success'
+      })
+        
+    },
+    error => {
+      console.error('Error al guardar el postulante:', error);
+      // Manejar errores
+    }
+  );
   }
 
   cancelar(i: number) {

@@ -14,7 +14,7 @@ const pagesRoutes: Routes = [
         component: PagesComponent,
         canActivate: [loginGuardGuard],
         children: [
-            {path:'dashboard', component: DashboardComponent, data: {titulo:'Dashboard'}},
+            { path: 'dashboard', component: DashboardComponent, data: { titulo: 'Dashboard' } },
 
             /* MEMORANDUM */
             { path: 'cod-asignar', component: CodAsignarComponent, data: { titulo: 'Nuevo Memorandum' }},

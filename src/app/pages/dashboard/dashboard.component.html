@@ -28,8 +28,8 @@
             <th pSortableColumn="ap_pat" style="min-width: 1rem">Apellido Paterno <p-sortIcon field="ap_pat"></p-sortIcon></th>
             <th pSortableColumn="ap_mat" style="min-width: 1rem">Apellido Materno <p-sortIcon field="ap_mat"></p-sortIcon></th>
             <th pSortableColumn="celular" style="min-width: 1rem">Celular<p-sortIcon field="celular"></p-sortIcon></th>
-            <th pSortableColumn="estado" style="min-width: 1rem">Estado <p-sortIcon field="estado"></p-sortIcon></th>
-            <th>Examenes</th>
+            <!-- <th pSortableColumn="estado" style="min-width: 1rem">Estado <p-sortIcon field="estado"></p-sortIcon></th> -->
+            <th style="min-width: 10rem">Examenes</th>
         </tr>
     </ng-template>
 
@@ -41,11 +41,12 @@
             <td>{{ postulante.ap_pat }}</td>
             <td>{{ postulante.ap_mat }}</td>
             <td>{{ postulante.celular }}</td>
-            <td><p-tag [value]="postulante.estado" [severity]="getSeverity(postulante.estado) ?? 'default'"></p-tag></td>
+            <!-- <td><p-tag [value]="postulante.estado" [severity]="getSeverity(postulante.estado) ?? 'default'"></p-tag></td> -->
             <td>
-                <button class="btn btn-danger " (click)="evaluar(1)"><i class="mdi mdi-heart-pulse mdi-24px"></i>E M</button>&nbsp;
-                <button class="btn btn-danger" (click)="evaluar(2)"><i class="mdi mdi-brain mdi-24px"></i> E P</button>&nbsp;
-                <button class="btn btn-danger" (click)="evaluar(3)"><i class="mdi mdi-tooth-outline mdi-24px"></i> E O</button>
+                <button pButton pRipple type="button" icon="mdi mdi-heart-pulse mdi-24px" class="p-button-rounded p-button-danger" (click)="evaluar(1)"></button>&nbsp;
+                <button pButton pRipple type="button" icon="mdi mdi-brain mdi-24px" class="p-button-rounded p-button-danger" (click)="evaluar(2)"></button>&nbsp;
+                <button pButton pRipple type="button" icon="mdi mdi-tooth-outline mdi-24px" class="p-button-rounded p-button-danger" (click)="evaluar(3)"></button>
+
             </td>
         </tr>
     </ng-template>
@@ -62,16 +63,20 @@
     <div class="p-fluid">
         <div style="display: flex; justify-content: space-between;">
             <div style="flex: 1; padding: 10px; ">
+                <label for="ci">Cedula de Identidad</label>
+                <input id="ci" type="text" pInputText [(ngModel)]="postulante.ci" placeholder="Ingresa tus nombres" />
+            </div>
+            <div style="flex: 1; padding: 10px; ">
                 <label for="nombres">Nombres</label>
                 <input id="nombres" type="text" pInputText [(ngModel)]="postulante.nombres" placeholder="Ingresa tus nombres" />
             </div>
             <div style="flex: 1; padding: 10px; ">
-                <label for="apPat">Apellido Paterno</label>
-                <input id="apPat" type="text" pInputText [(ngModel)]="postulante.apPat" placeholder="Ingresa tu apellido paterno" />
+                <label for="ap_pat">Apellido Paterno</label>
+                <input id="ap_pat" type="text" pInputText [(ngModel)]="postulante.ap_pat" placeholder="Ingresa tu apellido paterno" />
             </div>
             <div style="flex: 1; padding: 10px; ">
-                <label for="apMat">Apellido Materno</label>
-                <input id="apMat" type="text" pInputText [(ngModel)]="postulante.apMat" placeholder="Ingresa tu apellido materno" />
+                <label for="ap_mat">Apellido Materno</label>
+                <input id="ap_mat" type="text" pInputText [(ngModel)]="postulante.ap_mat" placeholder="Ingresa tu apellido materno" />
             </div>
         </div>
         <div style="display: flex; justify-content: space-between;">
@@ -86,7 +91,7 @@
             </div>
             <div style="flex: 1; padding: 10px; ">
                 <label for="correo">Correo Electronico</label>
-                <input id="correo" type="text" pInputText [(ngModel)]="postulante.apMat" placeholder="Ingresa tu correo electronico" />
+                <input id="correo" type="text" pInputText [(ngModel)]="postulante.correo" placeholder="Ingresa tu correo electronico" />
             </div>
         </div>
         <div style="display: flex; justify-content: space-between;">
@@ -100,8 +105,8 @@
                 </ng-select>
             </div>
             <div style="flex: 1; padding: 10px; ">
-                <label for="escuela">Escuela</label>
-                <ng-select [items]="departamentos" bindLabel="escuela" bindValue="id_escuela" [(ngModel)]="postulante.escuela">
+                <label for="id_escuela">Escuela</label>
+                <ng-select [items]="escuelas" bindLabel="nombre" bindValue="id_escuela" [(ngModel)]="postulante.id_escuela">
                 </ng-select>
             </div>
         </div>
@@ -121,7 +126,7 @@
                 <input id="total_boucher" type="text" pInputText [(ngModel)]="postulante.total_boucher" placeholder="Monto de Boucher" />
             </div>
             <div style="flex: 1; padding: 10px; justify-content: flex-end;">
-                <p-button label="+" icon="pi pi-check" (onClick)="guardarPostulante()"
+                <p-button label="+" icon="pi pi-check"
                     styleClass="p-button-success"></p-button>
             </div>
         </div>
@@ -132,7 +137,7 @@
     </div>
 </p-dialog>
 
-<p-dialog [(visible)]="vmedico" [modal]="true" header="Examen Médico" [closable]="false"
+<p-dialog [(visible)]="vmedico" [modal]="true" header="Examen Médico" [closable]="true"
     [style]="{width: '500px'}" [draggable]="false">
     <div class="p-fluid">
         <!-- Nombres -->
@@ -145,14 +150,14 @@
         <!-- Apellido Paterno -->
         <div class="p-field">
             <label for="apPat">Apellido Paterno</label>
-            <input id="apPat" type="text" pInputText [(ngModel)]="postulante.apPat"
+            <input id="apPat" type="text" pInputText [(ngModel)]="postulante.ap_pat"
                 placeholder="Ingresa tu apellido paterno" />
         </div>
 
         <!-- Apellido Materno -->
         <div class="p-field">
             <label for="apMat">Apellido Materno</label>
-            <input id="apMat" type="text" pInputText [(ngModel)]="postulante.apMat"
+            <input id="apMat" type="text" pInputText [(ngModel)]="postulante.ap_pat"
                 placeholder="Ingresa tu apellido materno" />
         </div>
 
@@ -181,15 +186,11 @@
         <div class="p-field p-fluid">
             <p-button label="Guardar" icon="pi pi-check" (onClick)="guardarPostulante()"
                 styleClass="p-button-success"></p-button>
-            <br>
-            <br>
-            <p-button label="Cancelar" icon="pi pi-times" (onClick)="cancelar(1)"
-                styleClass="p-button-secondary"></p-button>
         </div>
     </div>
 </p-dialog>
 
-<p-dialog [(visible)]="vpsico" [modal]="true" header="Examen Psicologico" [closable]="false"
+<p-dialog [(visible)]="vpsico" [modal]="true" header="Examen Psicologico" [closable]="true"
     [style]="{width: '500px'}" [draggable]="false">
     <div class="p-fluid">
         <!-- Nombres -->
@@ -202,14 +203,14 @@
         <!-- Apellido Paterno -->
         <div class="p-field">
             <label for="apPat">Apellido Paterno</label>
-            <input id="apPat" type="text" pInputText [(ngModel)]="postulante.apPat"
+            <input id="apPat" type="text" pInputText [(ngModel)]="postulante.ap_pat"
                 placeholder="Ingresa tu apellido paterno" />
         </div>
 
         <!-- Apellido Materno -->
         <div class="p-field">
             <label for="apMat">Apellido Materno</label>
-            <input id="apMat" type="text" pInputText [(ngModel)]="postulante.apMat"
+            <input id="apMat" type="text" pInputText [(ngModel)]="postulante.ap_pat"
                 placeholder="Ingresa tu apellido materno" />
         </div>
 
@@ -238,15 +239,11 @@
         <div class="p-field p-fluid">
             <p-button label="Guardar" icon="pi pi-check" (onClick)="guardarPostulante()"
                 styleClass="p-button-success"></p-button>
-            <br>
-            <br>
-            <p-button label="Cancelar" icon="pi pi-times" (onClick)="cancelar(2)"
-                styleClass="p-button-secondary"></p-button>
         </div>
     </div>
 </p-dialog>
 
-<p-dialog [(visible)]="vodonto" [modal]="true" header="Examen Odontologico" [closable]="false"
+<p-dialog [(visible)]="vodonto" [modal]="true" header="Examen Odontologico" [closable]="true"
     [style]="{width: '500px'}" [draggable]="false">
     <div class="p-fluid">
         <!-- Nombres -->
@@ -259,14 +256,14 @@
         <!-- Apellido Paterno -->
         <div class="p-field">
             <label for="apPat">Apellido Paterno</label>
-            <input id="apPat" type="text" pInputText [(ngModel)]="postulante.apPat"
+            <input id="apPat" type="text" pInputText [(ngModel)]="postulante.ap_pat"
                 placeholder="Ingresa tu apellido paterno" />
         </div>
 
         <!-- Apellido Materno -->
         <div class="p-field">
             <label for="apMat">Apellido Materno</label>
-            <input id="apMat" type="text" pInputText [(ngModel)]="postulante.apMat"
+            <input id="apMat" type="text" pInputText [(ngModel)]="postulante.ap_pat"
                 placeholder="Ingresa tu apellido materno" />
         </div>
 
